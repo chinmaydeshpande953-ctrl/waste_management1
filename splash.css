@@ -1,0 +1,244 @@
+:root{
+  --sky:#A9DDF3; --sky-soft:#D6F1FB;
+  --panel:#FFFFFF; --panel-tint:#EEF7E3;
+  --ink:#17402F; --muted:#4D6A5C; --line:#17402F;
+  --grass:#63B83A; --grass-d:#2F7D32; --field:#8ED35A;
+  --sun:#FFC233; --on-sun:#17402F; --water:#2F7FCF;
+  --soil:#A0673A; --soil-d:#7C4A28;
+  --hill1:#7CCB4B; --hill2:#58AE3C; --cloud:#FFFFFF;
+  --leaf:#4FA83A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --sky:#0F2233; --sky-soft:#173048;
+    --panel:#1B3A2F; --panel-tint:#16312A;
+    --ink:#EEF7E6; --muted:#A9C4B5; --line:#081410;
+    --grass:#7ED14F; --grass-d:#6CCB45; --field:#2D5A2B;
+    --water:#6FB2F2;
+    --soil:#8A5732; --soil-d:#6B4225;
+    --hill1:#1F4A2A; --hill2:#183C24; --cloud:#2A4560;
+    --leaf:#6CCB45;
+  }
+}
+:root[data-theme="dark"]{
+  --sky:#0F2233; --sky-soft:#173048;
+  --panel:#1B3A2F; --panel-tint:#16312A;
+  --ink:#EEF7E6; --muted:#A9C4B5; --line:#081410;
+  --grass:#7ED14F; --grass-d:#6CCB45; --field:#2D5A2B;
+  --water:#6FB2F2;
+  --soil:#8A5732; --soil-d:#6B4225;
+  --hill1:#1F4A2A; --hill2:#183C24; --cloud:#2A4560;
+  --leaf:#6CCB45;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--sky-soft);color:var(--ink);overflow:hidden;
+  font-family:"DM Sans","Noto Sans Kannada","Noto Sans Devanagari",system-ui,sans-serif;
+  font-size:16px;line-height:1.5;
+}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+
+.stage{
+  position:fixed;inset:0;overflow:hidden;
+  background:linear-gradient(180deg,var(--sky) 0%,var(--sky-soft) 100%);
+}
+
+/* ---------- sun ---------- */
+.sun{
+  position:absolute;right:11%;top:13%;width:clamp(84px,14vw,140px);aspect-ratio:1;
+  transform:translateY(160px);opacity:0;
+  animation:rise 1.1s cubic-bezier(.2,.8,.2,1) .05s forwards;
+}
+.sun svg{width:100%;height:100%;overflow:visible}
+.sun .rays{transform-origin:50% 50%;animation:spin 18s linear infinite}
+@keyframes rise{to{transform:none;opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- clouds ---------- */
+.cloud{position:absolute;fill:var(--cloud);opacity:.92;left:0;will-change:transform}
+.cloud.a{top:20%;width:150px;animation:drift 16s linear -4s infinite}
+.cloud.b{top:34%;width:108px;animation:drift 22s linear -13s infinite}
+.cloud.c{top:9%;width:84px;animation:drift 28s linear -20s infinite}
+@keyframes drift{from{transform:translateX(-200px)}to{transform:translateX(calc(100vw + 200px))}}
+
+/* ---------- hills + field ---------- */
+.hills{
+  position:absolute;left:0;right:0;bottom:4vh;width:100%;height:40vh;min-height:200px;display:block;
+}
+.hills .h2{transform:translateY(60px);animation:rise 1s cubic-bezier(.2,.8,.2,1) .15s forwards}
+.hills .h1{transform:translateY(80px);animation:rise 1s cubic-bezier(.2,.8,.2,1) .3s forwards}
+.field{
+  position:absolute;left:0;right:0;bottom:0;width:100%;height:clamp(190px,30vh,290px);display:block;
+}
+.plant .stem{
+  transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);
+  animation:grow .8s cubic-bezier(.2,.8,.2,1) var(--d) forwards;
+}
+.plant .leaf,.plant .top{
+  transform-box:fill-box;transform-origin:50% 50%;transform:scale(0);
+  animation:pop .4s cubic-bezier(.3,1.6,.5,1) forwards;
+}
+.plant .leaf{animation-delay:calc(var(--d) + .4s)}
+.plant .top{animation-delay:calc(var(--d) + .6s);animation-duration:.35s}
+@keyframes grow{to{transform:scaleY(1)}}
+@keyframes pop{to{transform:scale(1)}}
+
+/* ---------- tractors ---------- */
+.veh{position:absolute;left:0;will-change:transform}
+.veh.big{
+  z-index:2;bottom:1.5vh;width:clamp(150px,min(30vw,40vh),300px);
+  animation:crossR 1.7s linear .05s both;
+}
+.veh.small{
+  bottom:15vh;width:clamp(96px,min(17vw,22vh),170px);
+  animation:crossL 2.1s linear .45s both;
+}
+.veh.small .tractor{transform:scaleX(-1)}
+@keyframes crossR{from{transform:translateX(-105%)}to{transform:translateX(calc(100vw + 5%))}}
+@keyframes crossL{from{transform:translateX(100vw)}to{transform:translateX(-105%)}}
+.tractor{display:block;width:100%;height:auto;overflow:visible}
+.tractor .bob{animation:bob .24s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-2px)}}
+.tractor .wheel{transform-box:fill-box;transform-origin:50% 50%;animation:spin .3s linear infinite}
+.tractor .wheel.f{animation-duration:.17s}
+.tractor .puff{
+  transform-box:fill-box;transform-origin:50% 50%;opacity:0;
+  animation:puff .8s ease-out infinite;animation-delay:var(--p);
+}
+@keyframes puff{
+  0%{transform:translate(0,0) scale(.6);opacity:.85}
+  100%{transform:translate(-16px,-32px) scale(1.9);opacity:0}
+}
+
+/* ---------- farm equipment ---------- */
+.prop{
+  position:absolute;height:auto;display:block;overflow:visible;
+  opacity:0;animation:fade .5s ease-out forwards;
+}
+.sprinkler{left:2.5vw;bottom:3.5vh;width:clamp(60px,8vw,100px);animation-delay:.7s}
+.barrow{left:calc(2.5vw + clamp(60px,8vw,100px) + 8px);bottom:2vh;width:clamp(72px,9vw,120px);animation-delay:.9s}
+.spray path{animation:flow .5s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-27}}
+
+/* ---------- the farmer ---------- */
+.farmer{
+  position:absolute;z-index:3;right:2.5vw;bottom:1vh;
+  height:clamp(150px,31vh,310px);width:auto;aspect-ratio:150/210;display:block;overflow:visible;
+  transform-origin:50% 100%;transform:translateY(40px) scale(.5);opacity:0;
+  animation:farmerIn .55s cubic-bezier(.3,1.5,.5,1) 1.7s forwards;
+}
+@keyframes farmerIn{to{transform:none;opacity:1}}
+.farmer .arm{
+  transform-box:view-box;transform-origin:92px 86px;
+  animation:raise .65s cubic-bezier(.3,1.4,.5,1) 1.95s both;
+}
+@keyframes raise{
+  0%{transform:rotate(60deg)}
+  60%{transform:rotate(-9deg)}
+  80%{transform:rotate(3deg)}
+  100%{transform:rotate(0)}
+}
+.farmer .spark{
+  transform-box:fill-box;transform-origin:50% 50%;transform:scale(0);
+  animation:twinkle 1s ease-in-out infinite;animation-delay:calc(2.2s + var(--s));
+}
+@keyframes twinkle{
+  0%{transform:scale(0) rotate(0)}
+  40%{transform:scale(1.25) rotate(20deg)}
+  70%{transform:scale(1) rotate(0)}
+  100%{transform:scale(0) rotate(0)}
+}
+
+/* ---------- centre content ---------- */
+.center{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:calc(24px + env(safe-area-inset-top,0px)) 20px clamp(140px,25vh,280px);text-align:center;
+  transition:transform .5s ease-in,opacity .5s ease-in;
+}
+.badge{
+  width:88px;height:88px;border:3px solid var(--line);border-radius:24px;background:var(--sun);
+  box-shadow:0 5px 0 var(--line);display:grid;place-items:center;padding:12px;
+  transform:scale(.2) rotate(-24deg);opacity:0;
+  animation:badge .7s cubic-bezier(.3,1.6,.5,1) .15s forwards;
+}
+.badge svg{width:100%;height:100%}
+@keyframes badge{to{transform:none;opacity:1}}
+
+h1{
+  margin:0;display:flex;font-family:"Bricolage Grotesque","Noto Sans Kannada","Noto Sans Devanagari",system-ui,sans-serif;
+  font-weight:800;font-size:clamp(2.8rem,10vw,5.2rem);line-height:1;letter-spacing:-.025em;
+}
+h1 span{display:inline-block;opacity:0;transform:translateY(.5em) rotate(4deg);animation:letter .55s cubic-bezier(.2,.9,.3,1.3) forwards;animation-delay:calc(.45s + var(--i) * .055s)}
+@keyframes letter{to{opacity:1;transform:none}}
+
+.tag{
+  margin:0;font-size:clamp(1.05rem,3.2vw,1.3rem);font-weight:500;max-width:30ch;
+  opacity:0;animation:fade .6s ease-out 1.2s forwards;
+}
+.hello{
+  margin:0;display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;
+  background:var(--panel);border:3px solid var(--line);border-radius:999px;box-shadow:0 4px 0 var(--line);
+  padding:3px 16px;font-weight:700;font-size:.95rem;
+  opacity:0;animation:fade .6s ease-out 1.5s forwards;
+}
+.hello i{font-style:normal;color:var(--muted);font-weight:500}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- loader (fills in exactly the time the intro lasts) ---------- */
+.loader{width:min(340px,78vw);margin-top:6px;opacity:0;animation:fade .5s ease-out .9s forwards}
+.track{
+  height:22px;border:3px solid var(--line);border-radius:999px;background:var(--panel);
+  box-shadow:0 4px 0 var(--line);overflow:hidden;
+}
+.track i{
+  display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0);
+  background:repeating-linear-gradient(45deg,var(--grass) 0 10px,var(--grass-d) 10px 20px);
+  animation:fill 2.45s cubic-bezier(.5,.1,.3,1) .1s forwards;
+}
+@keyframes fill{to{transform:scaleX(1)}}
+.status{margin:10px 0 0;color:var(--muted);font-size:.95rem;font-weight:500;min-height:1.5em}
+
+/* ---------- skip ---------- */
+.skip{
+  position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:4;
+  background:var(--panel);color:var(--ink);border:3px solid var(--line);border-radius:999px;
+  padding:5px 16px;font:inherit;font-weight:700;cursor:pointer;box-shadow:0 4px 0 var(--line);
+  transition:transform .08s,box-shadow .08s;
+}
+.skip:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--line)}
+.skip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+
+/* ---------- exit: a circle of the game's own background opens from the centre ---------- */
+.curtain{
+  position:absolute;inset:0;z-index:5;background:var(--sky-soft);pointer-events:none;
+  clip-path:circle(0 at 50% 46%);transition:clip-path .5s cubic-bezier(.6,0,.9,.5);
+}
+.leaving .curtain{clip-path:circle(150% at 50% 46%)}
+.leaving .center{transform:scale(1.08);opacity:0}
+
+/* ---------- short / landscape screens ---------- */
+@media (max-height:520px){
+  .badge{width:56px;height:56px;border-radius:16px;padding:8px}
+  h1{font-size:2.4rem}
+  .hello{display:none}
+  .center{gap:8px;padding-bottom:30vh}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .cloud,.sun .rays{animation:none}
+  .cloud.a{transform:translateX(12vw)} .cloud.b{transform:translateX(62vw)} .cloud.c{transform:translateX(38vw)}
+  .sun,.hills .h1,.hills .h2{animation-duration:.01s;animation-delay:0s}
+  .plant .stem,.plant .leaf,.plant .top{animation-duration:.01s}
+  .veh{display:none}
+  .spray path{animation:none}
+  .prop{animation-duration:.01s}
+  .farmer{animation-duration:.01s}
+  .farmer .arm{animation:none}
+  .farmer .spark{animation:none;transform:scale(1)}
+  .badge,h1 span{animation-duration:.2s}
+  .curtain{clip-path:none;opacity:0;transition:opacity .5s}
+  .leaving .curtain{opacity:1}
+  .leaving .center{transform:none}
+}

@@ -1,0 +1,13 @@
+{
+  "name": "project-backend",
+  "version": "1.0.0",
+  "description": "Starter backend: user accounts, listings, contact form and weather. No packages to install.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}
